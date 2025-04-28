@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contribute - VanRakshak</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header id="main-header" class="scrolled">
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="m17 15-1.5-1.5"></path></svg>
+                    <h1>VanRakshak</h1>
+                </div>
+                <p class="tagline">Plant Trees, Save Forests</p>
+            </div>
+            <nav>
+                <button id="menu-toggle" class="mobile-menu-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+                </button>
+                <ul id="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" class="active">Contribute</a></li>
+                    <li><a href="#" class="login-btn">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="contribute-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Plant Trees, Restore Forests</h2>
+                    <p>Join our mission to restore forest areas affected by fires</p>
+                </div>
+
+                <div class="contribution-stats">
+                    <div class="contribution-card">
+                        <div class="contribution-value" id="stat-treesLost">2,500</div>
+                        <div class="contribution-label">Trees Lost This Year</div>
+                    </div>
+                    <div class="contribution-card">
+                        <div class="contribution-value" id="stat-treesPlanted">1,800</div>
+                        <div class="contribution-label">Trees Planted</div>
+                    </div>
+                    <div class="contribution-card">
+                        <div class="contribution-value" id="stat-pendingRequests">45</div>
+                        <div class="contribution-label">Pending Requests</div>
+                    </div>
+                    <div class="contribution-card">
+                        <div class="contribution-value" id="stat-completedRequests">89</div>
+                        <div class="contribution-label">Completed Plantations</div>
+                    </div>
+                </div>
+
+                <div class="contribution-options">
+                    <div class="contribution-option">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="option-icon"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                        <h3 class="option-title">Plant with VanRakshak</h3>
+                        <p class="option-description">We'll handle the planting process with our expert team and local partners</p>
+                        <button class="cta-button primary" onclick="document.getElementById('tree-request-form').scrollIntoView({behavior: 'smooth'})">Request Plantation</button>
+                    </div>
+
+                    <div class="contribution-option">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="option-icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+                        <h3 class="option-title">Plant by Yourself</h3>
+                        <p class="option-description">Get guidance on where and how to plant trees in affected areas</p>
+                        <button class="cta-button secondary">View Planting Areas</button>
+                    </div>
+                </div>
+
+                <form id="tree-request-form" class="tree-request-form">
+                    <div class="section-header">
+                        <h2>Request Tree Plantation</h2>
+                        <p>Fill out this form to request tree plantation in affected areas</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="planting-location">Planting Location</label>
+                        <select id="planting-location" name="location" required>
+                            <option value="">Select a location</option>
+                            <option value="himalayan">Himalayan Pine Forest</option>
+                            <option value="western">Western Ghats Forest</option>
+                            <option value="central">Central Indian Forest</option>
+                            <option value="eastern">Eastern Ghats Forest</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number-of-trees">Number of Trees</label>
+                        <input type="number" id="number-of-trees" name="trees" required min="1" max="1000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tree-type">Tree Type</label>
+                        <select id="tree-type" name="type" required>
+                            <option value="">Select tree type</option>
+                            <option value="native">Native Species Mix</option>
+                            <option value="fruit">Fruit Trees</option>
+                            <option value="medicinal">Medicinal Plants</option>
+                            <option value="bamboo">Bamboo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="planting-date">Preferred Planting Date</label>
+                        <input type="date" id="planting-date" name="date" required>
+                    </div>
+
+                    <button type="submit" class="cta-button primary">Submit Request</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

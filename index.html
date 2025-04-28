@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VanRakshak - Forest Fire Detection Platform</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/map.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header id="main-header">
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="m17 15-1.5-1.5"></path></svg>
+                    <h1>VanRakshak</h1>
+                </div>
+                <p class="tagline">Protecting forests through technology</p>
+            </div>
+            <nav>
+                <button id="menu-toggle" class="mobile-menu-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+                </button>
+                <ul id="nav-menu">
+                    <li><a href="#" class="active">Dashboard</a></li>
+                    <li><a href="#alerts-section">Alerts</a></li>
+                    <li><a href="#analytics-section">Analytics</a></li>
+                    <li><a href="#about-section">About</a></li>
+                    <li><a href="admin.html">Admin</a></li>
+                    <li><a href="contribute.html">Contribute</a></li>
+                    <li><a href="#" class="login-btn">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Real-time Forest Fire Detection</h2>
+                    <p>Using advanced thermal satellite technology to monitor and protect our forests</p>
+                    <div class="hero-cta">
+                        <button class="cta-button primary">View Map</button>
+                        <button class="cta-button secondary">Learn More</button>
+                    </div>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <h3>24/7</h3>
+                        <p>Monitoring</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>98%</h3>
+                        <p>Accuracy</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>15 min</h3>
+                        <p>Alert Time</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="map-section" id="map-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Thermal Map</h2>
+                    <p>Real-time temperature monitoring of forest regions</p>
+                </div>
+                <div class="map-container">
+                    <div id="map"></div>
+                    <div class="map-controls">
+                        <div class="control-panel">
+                            <h3>Map Controls</h3>
+                            <div class="control-group">
+                                <label>Region:</label>
+                                <select id="region-select">
+                                    <option value="all">All Regions</option>
+                                    <option value="north">Northern Forests</option>
+                                    <option value="central">Central Forests</option>
+                                    <option value="south">Southern Forests</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Data Type:</label>
+                                <select id="data-type">
+                                    <option value="temperature">Temperature</option>
+                                    <option value="humidity">Humidity</option>
+                                    <option value="wind">Wind Speed</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label>Time Range:</label>
+                                <select id="time-range">
+                                    <option value="current">Current</option>
+                                    <option value="24h">Last 24 Hours</option>
+                                    <option value="week">Last Week</option>
+                                </select>
+                            </div>
+                            <div class="temperature-scale">
+                                <div class="scale-label">Temperature (°C)</div>
+                                <div class="scale-gradient"></div>
+                                <div class="scale-values">
+                                    <span>10°</span>
+                                    <span>20°</span>
+                                    <span>30°</span>
+                                    <span>40°</span>
+                                    <span>50°+</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="alerts-section" id="alerts-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Fire Alerts</h2>
+                    <p>Recent temperature anomalies and potential fire hazards</p>
+                </div>
+                <div class="alerts-container">
+                    <div class="alert-filters">
+                        <div class="filter-group">
+                            <label>Filter by:</label>
+                            <select id="alert-filter">
+                                <option value="all">All Alerts</option>
+                                <option value="high">High Priority</option>
+                                <option value="medium">Medium Priority</option>
+                                <option value="low">Low Priority</option>
+                            </select>
+                        </div>
+                        <div class="search-group">
+                            <input type="text" id="alert-search" placeholder="Search by location...">
+                            <button class="search-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="alerts-list">
+                        <!-- Alert items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="analytics-section" id="analytics-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Analytics Dashboard</h2>
+                    <p>Visual insights into forest temperature trends</p>
+                </div>
+                <div class="analytics-grid">
+                    <div class="analytics-card wide">
+                        <h3>Temperature Trends</h3>
+                        <div class="chart-container">
+                            <canvas id="tempTrendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Alert Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="alertDistChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Regional Hotspots</h3>
+                        <div class="chart-container">
+                            <canvas id="hotspotChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card wide">
+                        <h3>Key Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value">42°C</div>
+                                <div class="stat-label">Highest Temp</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">26°C</div>
+                                <div class="stat-label">Average Temp</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">Active Alerts</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">Critical Zones</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-section" id="about-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>About VanRakshak</h2>
+                    <p>Our mission and technology</p>
+                </div>
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>Our Mission</h3>
+                        <p>VanRakshak ("Forest Protector") is dedicated to using cutting-edge technology to detect and prevent forest fires before they cause devastating damage to our precious ecosystems.</p>
+                        
+                        <h3>How It Works</h3>
+                        <p>Our platform uses thermal satellite imagery to monitor forest temperatures in real-time. When abnormal temperature increases are detected, our system automatically generates alerts for fire agencies and local authorities, allowing for rapid response and intervention.</p>
+                        
+                        <h3>Key Features</h3>
+                        <ul>
+                            <li>Real-time thermal mapping of forest regions</li>
+                            <li>Automated alert system for temperature anomalies</li>
+                            <li>Historical data analysis for identifying high-risk zones</li>
+                            <li>Mobile notifications for field personnel</li>
+                            <li>Comprehensive analytics dashboard</li>
+                        </ul>
+                    </div>
+                    <div class="about-image">
+                        <img src="https://images.pexels.com/photos/1287075/pexels-photo-1287075.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Forest landscape">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Join Us in Protecting Our Forests</h2>
+                    <p>Sign up for alerts and become part of our forest protection network</p>
+                    <form id="subscribe-form" class="subscribe-form">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="cta-button primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="m17 15-1.5-1.5"></path></svg>
+                    <h3>VanRakshak</h3>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Navigation</h4>
+                        <ul>
+                            <li><a href="#">Dashboard</a></li>
+                            <li><a href="#alerts-section">Alerts</a></li>
+                            <li><a href="#analytics-section">Analytics</a></li>
+                            <li><a href="#about-section">About</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API Access</a></li>
+                            <li><a href="#">Data Sources</a></li>
+                            <li><a href="#">Research Papers</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Contact</h4>
+                        <ul>
+                            <li><a href="mailto:info@vanrakshak.org">info@vanrakshak.org</a></li>
+                            <li><a href="tel:+919876543210">+91 9876543210</a></li>
+                            <li><a href="#">Report an Issue</a></li>
+                            <li><a href="#">Emergency Line</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 VanRakshak. All rights reserved.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                    <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg></a>
+                    <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg></a>
+                    <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="alert-popup" class="alert-popup">
+        <div class="alert-popup-content">
+            <div class="alert-popup-header">
+                <h3>Fire Alert!</h3>
+                <button id="close-alert" class="close-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="alert-popup-body">
+                <p id="alert-message">High temperature detected in Northern Forest Region. Temperature: 45°C</p>
+                <div class="alert-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Location:</span>
+                        <span id="alert-location" class="detail-value">Himalayan Pine Forest, Sector B</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Time Detected:</span>
+                        <span id="alert-time" class="detail-value">May 15, 2025 - 14:32</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Risk Level:</span>
+                        <span id="alert-risk" class="detail-value high-risk">High</span>
+                    </div>
+                </div>
+            </div>
+            <div class="alert-popup-footer">
+                <button class="cta-button primary" id="view-on-map-btn">View on Map</button>
+                <button class="cta-button secondary" id="dismiss-alert-btn">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/alerts.js"></script>
+    <script src="js/analytics.js"></script>
+</body>
+</html>
