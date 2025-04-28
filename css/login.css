@@ -1,0 +1,434 @@
+/* VanRakshak CSS - Forest Protection Theme
+   Base styles, typography, colors and utilities
+*/
+
+:root {
+    /* Color system */
+    --color-primary-100: #e8f5e9;
+    --color-primary-200: #c8e6c9;
+    --color-primary-300: #a5d6a7;
+    --color-primary-400: #81c784;
+    --color-primary-500: #4caf50;
+    --color-primary-600: #2c5a40;
+    --color-primary-700: #1e3a2b;
+    --color-primary-800: #1b5e20;
+    
+    --color-secondary-100: #f1f8e9;
+    --color-secondary-300: #aed581;
+    --color-secondary-500: #8bc34a;
+    --color-secondary-700: #558b2f;
+    
+    --color-accent-300: #a67c52;
+    --color-accent-500: #795548;
+    --color-accent-700: #5d4037;
+    
+    --color-success-500: #4caf50;
+    --color-warning-500: #ff9800;
+    --color-error-500: #f44336;
+    
+    --color-neutral-50: #fafafa;
+    --color-neutral-100: #f5f5f5;
+    --color-neutral-200: #eeeeee;
+    --color-neutral-300: #e0e0e0;
+    --color-neutral-400: #bdbdbd;
+    --color-neutral-500: #9e9e9e;
+    --color-neutral-600: #757575;
+    --color-neutral-700: #616161;
+    --color-neutral-800: #424242;
+    --color-neutral-900: #212121;
+    
+    /* Spacing system based on 8px */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 16px;
+    --space-4: 24px;
+    --space-5: 32px;
+    --space-6: 48px;
+    --space-7: 64px;
+    --space-8: 80px;
+    
+    /* Typography */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+    
+    /* Other variables */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+    --transition-fast: 0.2s ease;
+    --transition-medium: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Container widths */
+    --container-sm: 640px;
+    --container-md: 768px;
+    --container-lg: 1024px;
+    --container-xl: 1280px;
+  }
+  
+  /* Base styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: var(--font-body);
+    line-height: 1.5;
+    color: var(--color-neutral-800);
+    background-color: var(--color-neutral-100);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    line-height: 1.2;
+    color: var(--color-neutral-900);
+    margin-bottom: var(--space-3);
+    font-weight: 700;
+  }
+  
+  p {
+    margin-bottom: var(--space-3);
+  }
+  
+  a {
+    color: var(--color-primary-600);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  
+  a:hover {
+    color: var(--color-primary-500);
+  }
+  
+  ul {
+    list-style: none;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: var(--container-lg);
+    margin: 0 auto;
+    padding: 0 var(--space-3);
+  }
+  
+  /* Header styles */
+  #main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    transition: all var(--transition-medium);
+    padding: var(--space-3) 0;
+  }
+  
+  #main-header.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  #main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  
+  .logo-icon {
+    color: var(--color-primary-600);
+    stroke-width: 2.5;
+  }
+  
+  .logo h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+    color: var(--color-primary-700);
+  }
+  
+  .tagline {
+    font-size: 0.75rem;
+    color: var(--color-neutral-600);
+    margin-top: -5px;
+    margin-left: 32px;
+    margin-bottom: 0;
+  }
+  
+  nav {
+    display: flex;
+    align-items: center;
+  }
+  
+  #nav-menu {
+    display: flex;
+    gap: var(--space-4);
+  }
+  
+  #nav-menu a {
+    font-weight: 500;
+    position: relative;
+    padding: var(--space-1) var(--space-1);
+    color: var(--color-primary-700);
+  }
+  
+  #nav-menu a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary-500);
+    transition: width var(--transition-medium);
+  }
+  
+  #nav-menu a:hover::after {
+    width: 100%;
+  }
+  
+  .mobile-menu-button {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-neutral-700);
+  }
+  
+  /* Login section styles */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: var(--space-4) var(--space-3);
+    background: linear-gradient(135deg, var(--color-primary-100), var(--color-secondary-100));
+    position: relative;
+    overflow: hidden;
+  }
+  
+  main::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://images.pexels.com/photos/957024/forest-trees-perspective-bright-957024.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    z-index: 0;
+  }
+  
+  .login-section {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 450px;
+    margin: auto;
+    padding: var(--space-3);
+  }
+  
+  .login-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-6);
+    width: 100%;
+    animation: fadeIn 0.7s ease-out;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .login-container h2 {
+    color: var(--color-primary-700);
+    font-size: 2.25rem;
+    margin-bottom: var(--space-2);
+    text-align: center;
+  }
+  
+  .login-container p {
+    color: var(--color-neutral-600);
+    margin-bottom: var(--space-5);
+    text-align: center;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  
+  .form-group label {
+    font-weight: 500;
+    color: var(--color-neutral-700);
+    font-size: 0.875rem;
+  }
+  
+  .form-group input {
+    padding: var(--space-3);
+    border: 2px solid var(--color-neutral-200);
+    border-radius: var(--border-radius-md);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    background-color: white;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+  }
+  
+  .form-group input.error {
+    border-color: var(--color-error-500);
+  }
+  
+  .form-error {
+    color: var(--color-error-500);
+    font-size: 0.875rem;
+    margin-top: var(--space-1);
+  }
+  
+  .cta-button {
+    padding: var(--space-3) var(--space-4);
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-button.primary {
+    background-color: var(--color-primary-600);
+    color: white;
+  }
+  
+  .cta-button.primary:hover {
+    background-color: var(--color-primary-500);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .cta-button.primary:active {
+    transform: translateY(0);
+  }
+  
+  .cta-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .login-footer {
+    margin-top: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    text-align: center;
+    font-size: 0.875rem;
+  }
+  
+  .login-footer a {
+    font-weight: 500;
+    color: var(--color-primary-600);
+    transition: all var(--transition-fast);
+  }
+  
+  .login-footer a:hover {
+    color: var(--color-primary-500);
+    text-decoration: underline;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .mobile-menu-button {
+      display: block;
+    }
+    
+    #nav-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: white;
+      flex-direction: column;
+      width: 200px;
+      padding: var(--space-3);
+      gap: var(--space-3);
+      box-shadow: var(--shadow-md);
+      border-radius: var(--border-radius-sm);
+      display: none;
+    }
+    
+    #nav-menu.active {
+      display: flex;
+    }
+    
+    .login-container {
+      padding: var(--space-4);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .login-container {
+      padding: var(--space-3);
+    }
+    
+    .logo h1 {
+      font-size: 1.2rem;
+    }
+    
+    .tagline {
+      display: none;
+    }
+    
+    .login-container h2 {
+      font-size: 1.75rem;
+    }
+  }
