@@ -74,53 +74,17 @@
                 <div class="section-header">
                     <h2>Thermal Map</h2>
                     <p>Real-time temperature monitoring of forest regions</p>
-                </div>
-                <div class="map-container">
-                    <div id="map"></div>
-                    <div class="map-controls">
-                        <div class="control-panel">
-                            <h3>Map Controls</h3>
-                            <div class="control-group">
-                                <label>Region:</label>
-                                <select id="region-select">
-                                    <option value="all">All Regions</option>
-                                    <option value="north">Northern Forests</option>
-                                    <option value="central">Central Forests</option>
-                                    <option value="south">Southern Forests</option>
-                                </select>
-                            </div>
-                            <div class="control-group">
-                                <label>Data Type:</label>
-                                <select id="data-type">
-                                    <option value="temperature">Temperature</option>
-                                    <option value="humidity">Humidity</option>
-                                    <option value="wind">Wind Speed</option>
-                                </select>
-                            </div>
-                            <div class="control-group">
-                                <label>Time Range:</label>
-                                <select id="time-range">
-                                    <option value="current">Current</option>
-                                    <option value="24h">Last 24 Hours</option>
-                                    <option value="week">Last Week</option>
-                                </select>
-                            </div>
-                            <div class="temperature-scale">
-                                <div class="scale-label">Temperature (°C)</div>
-                                <div class="scale-gradient"></div>
-                                <div class="scale-values">
-                                    <span>10°</span>
-                                    <span>20°</span>
-                                    <span>30°</span>
-                                    <span>40°</span>
-                                    <span>50°+</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                
+        <h1>Geo satellite Map</h1>
+        <iframe
+            title="Windy Weather Map"
+            src="https://embed.windy.com/embed2.html?lat=28.61&lon=77.23&detailLat=28.61&detailLon=77.23&width=650&height=450&zoom=5&level=surface&overlay=wind&menu=&message=true"
+            width="100%"
+            height="500"
+            frameBorder="0"
+            className="rounded shadow"
+            allowFullScreen
+          ></iframe>
 
         <section class="alerts-section" id="alerts-section">
             <div class="container">
