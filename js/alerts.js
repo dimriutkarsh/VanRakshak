@@ -64,7 +64,7 @@ function generateMockAlerts() {
         },
         {
             id: 4,
-            title: 'Temperature Anomaly in Eastern Ghats',
+            title: 'Temperature normal in Eastern Ghats',
             description: 'Unusual temperature pattern detected in the eastern section of the Eastern Ghats Forest.',
             temperature: 38,
             location: 'Eastern Ghats Forest, Section E4',
