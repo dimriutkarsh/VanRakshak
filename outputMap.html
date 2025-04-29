@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Van Rakshak - Forest Protection System</title>
+    
+    <!-- Styles -->
+    <style>
+        @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+        }
+
+        .van-rakshak-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 20px;
+        }
+
+        .map-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            padding: 2rem;
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        #forestMap {
+            height: 700px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            touch-action: auto !important;
+        }
+
+        .leaflet-circle-marker {
+            stroke-width: 2;
+            stroke-opacity: 0.8;
+            fill-opacity: 0.4;
+        }
+
+        .fire-circle {
+            stroke: #ff6b6b;
+            fill: #ff6b6b;
+        }
+
+        .needed-circle {
+            stroke: #2ecc71;
+            fill: #2ecc71;
+            stroke-dasharray: 5,5;
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 120px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .species-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .species-list li {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-card {
+            position: absolute;
+            top: 120px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="van-rakshak-container">
+        <div class="map-header">
+            <h1><i class="fas fa-tree"></i> Van Rakshak</h1>
+            <p>Smart Forest Monitoring System - Tehri Garhwal</p>
+        </div>
+
+        <div id="forestMap"></div>
+        
+        <div class="map-controls">
+            <h3><i class="fas fa-map-marker-alt"></i> Map Legend</h3>
+            <div class="legend-item">
+                <div class="legend-color fire-circle"></div>
+                <span>Fire Risk Zones</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color needed-circle"></div>
+                <span>Plantation Needed Zones</span>
+            </div>
+        </div>
+
+        <div class="data-card">
+            <h3><i class="fas fa-chart-line"></i> Real-time Stats</h3>
+            <p>🌡️ Current Max Temp: 38°C</p>
+            <p>🔥 Active Alerts: 2</p>
+            <p>🌳 Plantation Target: 100,000 trees</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize Map with proper touch controls
+        const map = L.map('forestMap', {
+            center: [30.3753, 78.4802],
+            zoom: 10,
+            minZoom: 9,
+            maxBounds: L.latLngBounds(
+                [29.8, 77.8],  // SW
+                [31.0, 79.2]    // NE
+            ),
+            zoomControl: false,
+            dragging: true,
+            tap: false,
+            inertia: true
+        });
+
+        // Add Base Map with proper attribution
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Fire Zones Data
+        const fireZones = [
+            {
+                latlng: [30.4011, 78.4977], // Ghansali
+                data: {
+                    name: "Ghansali Fire Zone",
+                    riskLevel: "High",
+                    maxTemp: "46°C (2023)",
+                    lastFire: "April 2023",
+                    area: "8.5 km²"
+                }
+            },
+            {
+                latlng: [30.3568, 78.3932], // Chamba
+                data: {
+                    name: "Chamba High Risk Area",
+                    riskLevel: "Medium",
+                    maxTemp: "45°C (2022)",
+                    lastFire: "May 2022",
+                    area: "6.2 km²"
+                }
+            }
+        ];
+
+        // Plantation Needed Zones
+        const plantationNeededZones = [
+            {
+                latlng: [30.4805, 78.5562], // Pratapnagar
+                data: {
+                    name: "Pratapnagar Degraded Area",
+                    priority: "High",
+                    areaToPlant: "15 km²",
+                    recommendedSpecies: ["Deodar Cedar", "Banj Oak", "Rhododendron"],
+                    deadline: "December 2024"
+                }
+            },
+            {
+                latlng: [30.3129, 78.3984], // Narendra Nagar
+                data: {
+                    name: "Narendra Nagar Erosion Zone",
+                    priority: "Medium",
+                    areaToPlant: "12 km²",
+                    recommendedSpecies: ["Himalayan Maple", "Bamboo", "Sal Tree"],
+                    deadline: "June 2025"
+                }
+            }
+        ];
+
+        // Create Map Features
+        function initMapFeatures() {
+            // Fire Zones
+            fireZones.forEach(zone => {
+                L.circle(zone.latlng, {
+                    color: '#ff6b6b',
+                    fillColor: '#ff6b6b',
+                    radius: 1500,
+                    className: 'fire-circle'
+                }).bindPopup(`
+                    <div class="popup-content">
+                        <h3><i class="fas fa-fire"></i> ${zone.data.name}</h3>
+                        <p>⚠️ Risk Level: ${zone.data.riskLevel}</p>
+                        <p>🌡️ Peak Temperature: ${zone.data.maxTemp}</p>
+                        <p>📅 Last Incident: ${zone.data.lastFire}</p>
+                        <p>📏 Area: ${zone.data.area}</p>
+                    </div>
+                `).addTo(map);
+            });
+
+            // Plantation Needed Zones
+            plantationNeededZones.forEach(zone => {
+                L.circle(zone.latlng, {
+                    color: '#2ecc71',
+                    fillColor: '#2ecc71',
+                    radius: 2000,
+                    className: 'needed-circle'
+                }).bindPopup(`
+                    <div class="popup-content">
+                        <h3><i class="fas fa-exclamation-triangle"></i> ${zone.data.name}</h3>
+                        <p>🚩 Priority: ${zone.data.priority}</p>
+                        <p>📏 Area to Plant: ${zone.data.areaToPlant}</p>
+                        <p>⏳ Deadline: ${zone.data.deadline}</p>
+                        <div class="species-info">
+                            <strong>Recommended Species:</strong>
+                            <ul class="species-list">
+                                ${zone.data.recommendedSpecies.map(sp => `
+                                    <li><i class="fas fa-seedling"></i>${sp}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `).addTo(map);
+            });
+        }
+
+        // Initialize Map Features
+        initMapFeatures();
+
+        // Add Zoom Control
+        L.control.zoom({
+            position: 'topright'
+        }).addTo(map);
+
+        // Enable proper touch handling
+        map.touchZoom.enable();
+        map.doubleClickZoom.enable();
+        map.scrollWheelZoom.enable();
+
+        // Set strict boundaries
+        map.setMaxBounds(map.getBounds());
+    </script>
+</body>
+</html>
