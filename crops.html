@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart Analyst Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.3/dist/apexcharts.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --secondary: #81c784;
+            --background: #f1f8e9;
+            --warning: #ff7043;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background: var(--background);
+            color: #2d3436;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        input {
+            padding: 1rem;
+            border: 2px solid #e0e6ed;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(129, 199, 132, 0.3);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .data-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .sensor-item {
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 0.8rem;
+            text-align: center;
+        }
+
+        .sensor-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .sensor-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid var(--primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        .season-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+        }
+
+        .season-item {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: var(--background);
+            flex: 1;
+            margin: 0 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: var(--primary); text-align: center; margin-bottom: 2rem;">
+            <i class="fas fa-seedling"></i> AgriSmart Analyst Pro
+            <div style="font-size: 1rem; color: #666; margin-top: 0.5rem;">
+                AI-Powered Agricultural Intelligence System
+            </div>
+        </h1>
+        
+        <div class="input-section">
+            <input type="text" id="location" placeholder="Enter location or coordinates 📍">
+            <button onclick="getLocation()">
+                <i class="fas fa-map-marker-alt"></i>
+                Auto Detect
+            </button>
+            <button onclick="analyzeLocation()">
+                <i class="fas fa-chart-bar"></i>
+                Generate Report
+            </button>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem;">Analyzing environmental conditions...</p>
+        </div>
+
+        <div id="dashboard" class="dashboard" style="display: none;"></div>
+    </div>
+
+    <script>
+        let analysisData = {};
+        let cropModel;
+        const WEATHER_API_KEY = '8f075a70f27474c8e30aa802dc08953f'; 
+        const CACHE_DURATION = 3600000; // 1 hour cache
+
+        const regionalData = {
+            'northern-mountains': {
+                practices: ['Terrace farming', 'Soil conservation'],
+                seasons: { sowing: ['Mar-Apr'], harvesting: ['Sep-Oct'] }
+            },
+            'plains': {
+                practices: ['Crop rotation', 'Drip irrigation'],
+                seasons: { sowing: ['Jun-Jul'], harvesting: ['Nov-Dec'] }
+            }
+        };
+
+        // Enhanced AI Model
+        async function initModel() {
+            try {
+                cropModel = tf.sequential({
+                    layers: [
+                        tf.layers.dense({ 
+                            inputShape: [6], 
+                            units: 24, 
+                            activation: 'relu',
+                            kernelInitializer: 'heNormal' 
+                        }),
+                        tf.layers.dropout({ rate: 0.3 }),
+                        tf.layers.dense({ units: 12, activation: 'relu' }),
+                        tf.layers.dense({ units: 5, activation: 'softmax' })
+                    ]
+                });
+
+                cropModel.compile({
+                    optimizer: tf.train.adam(0.01),
+                    loss: 'categoricalCrossentropy',
+                    metrics: ['accuracy']
+                });
+
+                // Enhanced training data
+                const xs = tf.tensor2d([
+                    [28, 65, 120, 70, 6.2, 0], [22, 55, 40, 60, 6.8, 0],
+                    [18, 45, 25, 50, 5.9, 1], [25, 60, 80, 65, 6.5, 1],
+                    [30, 70, 180, 75, 6.0, 0], [20, 50, 30, 55, 6.1, 1],
+                    [26, 68, 150, 72, 6.3, 0], [19, 48, 35, 58, 6.0, 1]
+                ]);
+                
+                const ys = tf.tensor2d([
+                    [1,0,0,0,0], [0,1,0,0,0],
+                    [0,0,1,0,0], [0,0,0,1,0],
+                    [1,0,0,0,0], [0,0,0,0,1],
+                    [1,0,0,0,0], [0,0,1,0,0]
+                ]);
+
+                await cropModel.fit(xs, ys, {
+                    epochs: 250,
+                    batchSize: 4,
+                    validationSplit: 0.2,
+                    callbacks: {
+                        onEpochEnd: (epoch, logs) => 
+                            console.log(`Epoch ${epoch}: loss=${logs.loss.toFixed(3)}`)
+                    }
+                });
+            } catch (error) {
+                console.error('Model initialization failed:', error);
+                alert('AI model failed to initialize. Please refresh the page.');
+            }
+        }
+
+        async function predictCrops(envData) {
+            try {
+                const input = tf.tensor2d([[
+                    envData.temp / 40,
+                    envData.humidity / 100,
+                    envData.rainfall / 300,
+                    envData.soil_moisture / 100,
+                    envData.soil_ph / 10,
+                    envData.region === 'plains' ? 0 : 1
+                ]]);
+                
+                const prediction = cropModel.predict(input);
+                const values = await prediction.data();
+                input.dispose();
+                prediction.dispose();
+
+                return ['Rice', 'Wheat', 'Apples', 'Potatoes', 'Sugarcane','Mango','Papaya']
+                    .map((name, i) => ({ 
+                        name, 
+                        probability: Math.min(1, Math.max(0, values[i])) 
+                    }))
+                    .sort((a, b) => b.probability - a.probability);
+            } catch (error) {
+                console.error('Prediction failed:', error);
+                return [];
+            }
+        }
+
+        async function getLocation() {
+            try {
+                if (!navigator.geolocation) throw new Error('Geolocation not supported');
+                
+                const position = await new Promise((resolve, reject) => 
+                    navigator.geolocation.getCurrentPosition(resolve, reject));
+                
+                const lat = position.coords.latitude.toFixed(4);
+                const lon = position.coords.longitude.toFixed(4);
+                document.getElementById('location').value = `${lat}, ${lon}`;
+            } catch (error) {
+                alert(`Location Error: ${error.message}`);
+            }
+        }
+
+        async function analyzeLocation() {
+            const location = document.getElementById('location').value.trim();
+            if (!location) return alert("Please enter a location");
+
+            showLoading(true);
+            try {
+                let data = checkCache(location);
+                
+                if (!data) {
+                    const [weather, pollution] = await Promise.all([
+                        fetchWeather(location),
+                        fetchPollution(location)
+                    ]);
+                    
+                    data = {
+                        location: weather.name,
+                        region: weather.coord.lat > 28.5 ? 'northern-mountains' : 'plains',
+                        temp: weather.main.temp,
+                        humidity: weather.main.humidity,
+                        rainfall: weather.rain?.['1h'] || 0,
+                        wind: weather.wind.speed,
+                        soil_moisture: Math.min(100, (weather.rain?.['1h'] || 0) * 5 + weather.main.humidity * 0.7),
+                        soil_ph: calculateSoilPH(pollution),
+                        timestamp: Date.now()
+                    };
+                    
+                    saveToCache(location, data);
+                }
+
+                analysisData = data;
+                await updateDashboard();
+                generateCharts();
+            } catch (error) {
+                alert(`Analysis failed: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function calculateSoilPH(pollution) {
+            const basePH = 6.5;
+            const components = pollution.list[0].components;
+            const variation = (components.so2 / 20) - (components.no2 / 30);
+            return Math.min(8.5, Math.max(4.5, basePH + variation));
+        }
+
+        async function updateDashboard() {
+            try {
+                const crops = await predictCrops(analysisData);
+                const region = regionalData[analysisData.region];
+
+                document.getElementById('dashboard').innerHTML = `
+                    <div class="data-card">
+                        <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+                        <div class="sensor-grid">
+                            <div class="sensor-item">
+                                <div class="sensor-value">${analysisData.location}</div>
+                                <div>Location</div>
+                            </div>
+                            <div class="sensor-item">
+                                <div class="sensor-value">${analysisData.region.toUpperCase()}</div>
+                                <div>Region</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-card">
+                        <h3><i class="fas fa-thermometer-half"></i> Climate</h3>
+                        <div class="sensor-grid">
+                            ${createSensorItem('Temperature', `${analysisData.temp}°C`)}
+                            ${createSensorItem('Humidity', `${analysisData.humidity}%`)}
+                            ${createSensorItem('Rainfall', `${analysisData.rainfall}mm`)}
+                        </div>
+                        <div id="climateChart"></div>
+                    </div>
+
+                    <div class="data-card">
+                        <h3><i class="fas fa-leaf"></i> Recommendations</h3>
+                        <div class="sensor-grid">
+                            ${crops.slice(0,4).map(crop => `
+                                <div class="sensor-item">
+                                    <div class="sensor-value">${crop.name}</div>
+                                    <small>${(crop.probability * 100).toFixed(1)}% match</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="data-card">
+                        <h3><i class="fas fa-seedling"></i> Soil Health</h3>
+                        <div class="sensor-grid">
+                            ${createSensorItem('Moisture', `${analysisData.soil_moisture.toFixed(1)}%`)}
+                            ${createSensorItem('pH Level', analysisData.soil_ph.toFixed(1))}
+                        </div>
+                        <div id="soilChart"></div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Dashboard update failed:', error);
+            }
+        }
+
+        function createSensorItem(label, value) {
+            return `
+                <div class="sensor-item">
+                    <div class="sensor-value">${value}</div>
+                    <div>${label}</div>
+                </div>
+            `;
+        }
+
+        // Helper functions
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('dashboard').style.display = show ? 'none' : 'grid';
+        }
+
+        function checkCache(key) {
+            const cache = JSON.parse(localStorage.getItem(key));
+            return cache && Date.now() - cache.timestamp < CACHE_DURATION ? cache.data : null;
+        }
+
+        function saveToCache(key, data) {
+            localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+        }
+
+        async function fetchWeather(location) {
+            try {
+                const coords = await getCoordinates(location);
+                const response = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?lat=${coords[0]}&lon=${coords[1]}&units=metric&appid=${WEATHER_API_KEY}`
+                );
+                if (!response.ok) throw new Error('Location not found');
+                return await response.json();
+            } catch (error) {
+                throw new Error(`Weather API error: ${error.message}`);
+            }
+        }
+
+        async function fetchPollution(location) {
+            try {
+                const coords = await getCoordinates(location);
+                const response = await fetch(
+                    `https://api.openweathermap.org/data/2.5/air_pollution?lat=${coords[0]}&lon=${coords[1]}&appid=${WEATHER_API_KEY}`
+                );
+                return await response.json();
+            } catch (error) {
+                console.error('Pollution API error:', error);
+                return { list: [{ components: { so2: 0, no2: 0 } }] };
+            }
+        }
+
+        async function getCoordinates(location) {
+            if (location.includes(',')) {
+                return location.split(',').map(Number);
+            }
+            const response = await fetch(
+                `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=${WEATHER_API_KEY}`
+            );
+            const data = await response.json();
+            if (!data.length) throw new Error('Location not found');
+            return [data[0].lat, data[0].lon];
+        }
+
+        function generateCharts() {
+            try {
+                new ApexCharts(document.querySelector("#climateChart"), {
+                    series: [{
+                        name: 'Climate Data',
+                        data: [analysisData.temp, analysisData.humidity, analysisData.rainfall]
+                    }],
+                    chart: { type: 'radar', height: 300 },
+                    xaxis: { categories: ['Temp (°C)', 'Humidity (%)', 'Rain (mm)'] }
+                }).render();
+
+                new ApexCharts(document.querySelector("#soilChart"), {
+                    series: [{
+                        name: 'Soil Health',
+                        data: [analysisData.soil_moisture, analysisData.soil_ph * 10]
+                    }],
+                    chart: { type: 'bar', height: 300 },
+                    xaxis: { categories: ['Moisture (%)', 'pH Level'] }
+                }).render();
+            } catch (error) {
+                console.error('Chart error:', error);
+            }
+        }
+
+        // Initialize when TensorFlow is ready
+        tf.ready().then(() => {
+            initModel();
+            console.log("TensorFlow.js initialized");
+        });
+    </script>
+    <!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/65e5f8169131ed19d974da66/1ho55274b';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
+</body>
+</html>
