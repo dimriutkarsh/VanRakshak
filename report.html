@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uttarakhand Forest Fire Reports</title>
+    <link rel="stylesheet" href="./css/variables.css">
+    <link rel="stylesheet" href="./css/layout.css">
+    <link rel="stylesheet" href="./css/components.css">
+    <link rel="stylesheet" href="./css/responsive.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="">
+          <h2>VanRakshak</h2>
+        </div>
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="nav-item active"><a href="admin-dashboard.html"><span class="nav-icon">📊</span> Dashboard</a></li>
+          </ul>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-details">
+              <p class="user-name">Admin User</p>
+              <p class="user-role">Forest Administrator</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+      
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="main-header">
+          <div class="header-title">
+            <h1>Uttarakhand Forest Fire Reports</h1>
+            <p class="subtitle">Monitoring active forest fires in Uttarakhand</p>
+          </div>
+          <div class="header-actions">
+            <div class="date-range-picker">
+              <span class="date-range-label">Date Range:</span>
+              <input type="date" id="date-from" class="date-input">
+              <span>to</span>
+              <input type="date" id="date-to" class="date-input">
+              <button id="apply-date" class="btn btn-small">Apply</button>
+            </div>
+            <button id="refresh-data" class="btn btn-primary">
+              <span class="icon">🔄</span> Refresh Data
+            </button>
+          </div>
+        </header>
+        
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <div class="stat-icon fire-icon">🔥</div>
+            <div class="stat-content">
+              <h3 class="stat-title">Active Fires</h3>
+              <p class="stat-value" id="active-fires">24</p>
+              <p class="stat-trend up">+12% from last month</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon tree-icon">🌳</div>
+            <div class="stat-content">
+              <h3 class="stat-title">Affected Area</h3>
+              <p class="stat-value" id="affected-area">1,280 ha</p>
+              <p class="stat-trend down">-3% from last month</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon alert-icon">✓</div>
+            <div class="stat-content">
+              <h3 class="stat-title">Resolved Fires</h3>
+              <p class="stat-value" id="resolved-fires">45</p>
+              <p class="stat-trend up">+7 from last month</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon report-icon">📋</div>
+            <div class="stat-content">
+              <h3 class="stat-title">Total Reports</h3>
+              <p class="stat-value" id="total-reports">156</p>
+              <p class="stat-trend up">+18 new this month</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-grid">
+          <section class="dashboard-panel chart-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Fire Incidents Trend</h2>
+            </div>
+            <div class="panel-content">
+              <canvas id="fire-trend-chart"></canvas>
+            </div>
+          </section>
+          
+          <section class="dashboard-panel map-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Fire Locations</h2>
+            </div>
+            <div class="panel-content">
+              <div id="map-container"></div>
+            </div>
+          </section>
+          
+          <section class="dashboard-panel reports-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Recent Reports</h2>
+              <div class="panel-actions">
+                <div class="search-container">
+                  <input type="text" id="search-reports" class="search-input" placeholder="Search reports...">
+                  <span class="search-icon">🔍</span>
+                </div>
+              </div>
+            </div>
+            <div class="panel-content">
+              <div class="reports-table-container">
+                <table class="reports-table">
+                  <thead>
+                    <tr>
+                      <th class="sortable" data-sort="id">ID <span class="sort-icon">⇅</span></th>
+                      <th class="sortable" data-sort="date">Date <span class="sort-icon">⇅</span></th>
+                      <th class="sortable" data-sort="location">Location <span class="sort-icon">⇅</span></th>
+                      <th class="sortable" data-sort="severity">Severity <span class="sort-icon">⇅</span></th>
+                      <th class="sortable" data-sort="status">Status <span class="sort-icon">⇅</span></th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reports-table-body">
+                    <!-- Table rows will be populated by JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-pagination">
+                <button class="pagination-btn" id="prev-page" disabled>Previous</button>
+                <span class="pagination-info">Page <span id="current-page">1</span> of <span id="total-pages">5</span></span>
+                <button class="pagination-btn" id="next-page">Next</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    
+    <!-- Report Detail Modal -->
+    <div id="report-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title">Report Details</h2>
+          <button class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="report-details-content"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary modal-close">Close</button>
+        </div>
+      </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="./report.js/charts.js"></script>
+    <script src="./report.js/data.js"></script>
+    <script src="./report.js/main.js"></script>
+    <script src="./report.js/map.js"></script>
+    <script src="./report.js/reports.js"></script>
+    <script src="./report.js/utils.js"></script>
+  </body>
+</html>
