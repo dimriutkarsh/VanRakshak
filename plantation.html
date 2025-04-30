@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanrakshak - Forest Fire Awareness | Uttarakhand</title>
+    <link rel="stylesheet" href="./plantation.css/map-styles.css">
+    <link rel="stylesheet" href="./plantation.css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin="" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <div class="container">
+          <div class="logo-container">
+            <h1>Vanrakshak</h1>
+            <p class="tagline"></p>
+          </div>
+          <nav class="main-nav">
+            <ul>
+              <li><a href="index.html" class="active">Home</a></li>
+              <li><a href="#map-section">Fire Map</a></li>
+              <li><a href="#statistics">Statistics</a></li>
+              <li><a href="#plantation">Plantation</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+          </nav>
+          <button class="mobile-menu-toggle" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </header>
+
+      <section id="home" class="hero-section">
+        <div class="container">
+          <div class="hero-content">
+            <h2>Join the Movement to Restore Our Forests</h2>
+            <p>Discover forest fire affected areas in Uttarakhand and help with reforestation efforts.</p>
+            <div class="cta-buttons">
+              <a href="#map-section" class="btn btn-primary">Explore Map</a>
+              <a href="#plantation" class="btn btn-secondary">Find Plantation Sites</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="map-section" class="map-section">
+        <div class="container">
+          <h2>Plantation Map</h2>
+          <p>View areas affected by forest fires and potential plantation sites in Uttarakhand.</p>
+          
+          <div class="search-container">
+            <div class="search-box">
+              <input type="text" id="location-search" placeholder="Search for a location in Uttarakhand...">
+              <button id="search-btn" class="btn">Search</button>
+              <button id="use-my-location" class="btn btn-outline">Use My Location</button>
+            </div>
+          </div>
+          
+          <div class="map-container">
+            <div id="fire-map"></div>
+            
+            <div class="map-legend">
+              <h3>Legend</h3>
+              <ul>
+                <li><span class="legend-marker severe-fire"></span> Severe Fire Damage</li>
+                <li><span class="legend-marker moderate-fire"></span> Moderate Fire Damage</li>
+                <li><span class="legend-marker minor-fire"></span> Minor Fire Damage</li>
+                <li><span class="legend-marker plantation-site"></span> Suitable for Plantation</li>
+                <li><span class="legend-marker low-density"></span> Low Density Forest</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="statistics" class="statistics-section">
+        <div class="container">
+          <h2>Forest Fire Statistics</h2>
+          <p>Learn about the impact of forest fires in Uttarakhand regions.</p>
+          
+          <div class="stats-container">
+            <div class="stat-card">
+              <div class="stat-icon">🌲</div>
+              <h3>Trees Affected</h3>
+              <p class="stat-number" id="trees-affected">Loading...</p>
+              <p class="stat-description">Trees damaged or destroyed by forest fires in Uttarakhand.</p>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">🔥</div>
+              <h3>Active Fires</h3>
+              <p class="stat-number" id="active-fires">Loading...</p>
+              <p class="stat-description">Current active forest fires in the region.</p>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">📍</div>
+              <h3>Affected Areas</h3>
+              <p class="stat-number" id="affected-areas">Loading...</p>
+              <p class="stat-description">Number of areas affected by fires in last 12 months.</p>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">🌱</div>
+              <h3>Plantation Sites</h3>
+              <p class="stat-number" id="plantation-sites">Loading...</p>
+              <p class="stat-description">Available sites suitable for plantation efforts.</p>
+            </div>
+          </div>
+          
+          <div class="region-stats">
+            <h3>Statistics by Region</h3>
+            <div class="region-selector">
+              <select id="region-select">
+                <option value="all">All Regions</option>
+                <option value="dehradun">Dehradun</option>
+                <option value="nainital">Nainital</option>
+                <option value="haridwar">Haridwar</option>
+                <option value="almora">Almora</option>
+                <option value="pithoragarh">Pithoragarh</option>
+                <option value="chamoli">Chamoli</option>
+              </select>
+            </div>
+            
+            <div class="region-data">
+              <div id="region-chart" class="region-chart"></div>
+              <div id="region-detail" class="region-detail">
+                <p>Select a region to view detailed statistics.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="plantation" class="plantation-section">
+        <div class="container">
+          <h2>Plantation Opportunities</h2>
+          <p>Find areas near you that need reforestation efforts.</p>
+          
+          <div class="plantation-finder">
+            <div class="finder-form">
+              <div class="form-group">
+                <label for="distance">Distance from your location (km)</label>
+                <input type="range" id="distance" min="5" max="100" value="25">
+                <span id="distance-value">25 km</span>
+              </div>
+              
+              <div class="form-group">
+                <label for="area-type">Area Type</label>
+                <select id="area-type">
+                  <option value="all">All Areas</option>
+                  <option value="fire-affected">Fire Affected</option>
+                  <option value="low-density">Low Density Forest</option>
+                  <option value="deforested">Deforested Land</option>
+                </select>
+              </div>
+              
+              <button id="find-plantation-sites" class="btn btn-primary">Find Sites</button>
+            </div>
+            
+            <div id="plantation-results" class="plantation-results">
+              <p class="placeholder-text">Use the filters to find plantation sites near you.</p>
+            </div>
+          </div>
+          
+          <div class="plantation-guide">
+            <h3>Plantation Guide</h3>
+            <div class="guide-cards">
+              <div class="guide-card">
+                <img src="https://images.pexels.com/photos/1072824/pexels-photo-1072824.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Site Selection" class="guide-img">
+                <h4>Site Selection</h4>
+                <p>Learn how to select the right site for plantation based on soil, climate, and accessibility.</p>
+                <a href="#" class="read-more">Read More</a>
+              </div>
+              
+              <div class="guide-card">
+                <img src="https://images.pexels.com/photos/4505161/pexels-photo-4505161.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Saplings Selection" class="guide-img">
+                <h4>Saplings Selection</h4>
+                <p>Guidance on selecting the right types of saplings that are native to Uttarakhand forests.</p>
+                <a href="#" class="read-more">Read More</a>
+              </div>
+              
+              <div class="guide-card">
+                <img src="https://images.pexels.com/photos/6091918/pexels-photo-6091918.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Plantation Techniques" class="guide-img">
+                <h4>Plantation Techniques</h4>
+                <p>Best practices for planting trees to ensure high survival rates and healthy growth.</p>
+                <a href="#" class="read-more">Read More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="footer-about">
+              <h3>Vanrakshak</h3>
+              <p>A community initiative for forest conservation and restoration in Uttarakhand.</p>
+            </div>
+            
+            <div class="footer-links">
+              <h3>Quick Links</h3>
+              <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#map-section">Fire Map</a></li>
+                <li><a href="#statistics">Statistics</a></li>
+                <li><a href="#plantation">Plantation</a></li>
+                <li><a href="#about">About</a></li>
+              </ul>
+            </div>
+            
+            <div class="footer-contact">
+              <h3>Contact Us</h3>
+              <p>Email: info@vanrakshak.org</p>
+              <p>Phone: +91 XXXXX XXXXX</p>
+              <div class="social-links">
+                <a href="#" aria-label="Facebook"><i class="social-icon">Facebook</i></a>
+                <a href="#" aria-label="Twitter"><i class="social-icon">Twitter</i></a>
+                <a href="#" aria-label="Instagram"><i class="social-icon">Instagram</i></a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="footer-bottom">
+            <p>&copy; 2025 Vanrakshak. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+    <script type="module" src="./plantation.js/main.js"></script>
+    <script type="module" src="./plantation.js/statistics.js"></script>
+    <script type="module" src="./plantation.js/navigation.js"></script>
+    <script type="module" src="./plantation.js/map.js"></script>
+    <script type="module" src="plantation.js/plantation.js"></script>
+  </body>
+</html>
