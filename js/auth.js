@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     role: 'admin',
                     name: 'Forest Admin'
                 });
-                window.location.href = 'admin-dashboard.html';
+                window.location.href = 'https://vanrakshak01.netlify.app/';
             } else {
                 showFormError('admin-email', 'Invalid admin credentials');
             }
